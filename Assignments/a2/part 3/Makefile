@@ -1,0 +1,35 @@
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic -pthread
+LDFLAGS = -pthread
+
+all: build
+
+build: client server
+
+client: client.cpp
+	$(CXX) $(CXXFLAGS) -o client client.cpp $(LDFLAGS)
+
+server: server.cpp
+	$(CXX) $(CXXFLAGS) -o server server.cpp $(LDFLAGS)
+
+run: client server
+	./server & sleep 1 && ./client
+
+run-aloha: client server
+	./server & sleep 1 && ./client aloha
+
+run-beb: client server
+	./server & sleep 1 && ./client beb
+
+run-cscd: client server	
+	./server & sleep 1 && ./client sensing
+
+plot:
+	python3 plot.py
+
+clean:
+	rm -f client server plot.png
+	rm -f output_client*.txt
+	killall server 2>/dev/null || true
+
+.PHONY: all build run plot clean
